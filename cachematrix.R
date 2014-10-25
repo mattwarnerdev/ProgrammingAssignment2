@@ -29,10 +29,10 @@ cacheSolve <- function(x, ...) {
      ## Return a matrix that is the inverse of 'x'
      inverse <- x$getInverse()     ##Reference the current cached value
      if(!is.null(inverse)) {
-          print("Getting inverse from cache...")
+          message("Getting inverse from cache...")
           return(inverse)
      }
-     print("Generating inverse (no cache)")
+     message("Generating inverse (no cache)")
      inverse <- solve(x$get())     ##Calculate the inverse
      x$setInverse(inverse)         ##Cache the inverse in x
      inverse                       ##Return the inverse
