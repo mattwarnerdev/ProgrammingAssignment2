@@ -72,16 +72,14 @@ cacheSolve <- function(x, ...) {
      ##Reference the current cached value
      inverse <- x$getInverse()     
      
-     ## Use the cached value if it exists
+     ## Use the cached value if it exists, or calculate and cache it if it doesn't exist
      if(!is.null(inverse)) {
-          message("Getting inverse from cache...")
-          return(inverse)
+          message("Cached inverse found.  No recalculation needed.  Yeehoo!")          
+     } else {
+          message("Generating inverse (no cache)")
+          inverse <- solve(x$get())     
+          x$setInverse(inverse)    
      }
-     
-     ## Calculate and cache the inverse
-     message("Generating inverse (no cache)")
-     inverse <- solve(x$get())     
-     x$setInverse(inverse)
      
      ##Return the inverse
      inverse                       
@@ -112,10 +110,13 @@ demonstrate <- function() {
      
      message("Call cacheSolve(cm)...Inverse should be calculated because")
      message(" it's the first lookup...")
-     cacheSolve(cm)
+     k <- cacheSolve(cm)
      message("Printing inverse with cm$getInverse()")
      print(cm$getInverse())
+     message("Or by capturing the direct output from the cacheSolve(cm) function...")
+     print(k)
      
+     message()
      message("Calling cacheSolve(cm) again should use the cached")
      message(" version, no recalculation needed.")
      cacheSolve(cm)
