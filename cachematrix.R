@@ -92,7 +92,7 @@ demonstrate <- function() {
      
      message()
      message("Thanks to http://www.mathwords.com/i/inverse_of_a_matrix.htm ")
-     message(" for matrix and inverse matrix examples.")
+     message(" for the example [4, 3; 3, 2] matrix and it's inverse, [-2, 3; 3, -4].")
      message()
      message("Building invertible matrix, store in variable 'm':")
      m <- matrix(c(4, 3, 3, 2), 2)
