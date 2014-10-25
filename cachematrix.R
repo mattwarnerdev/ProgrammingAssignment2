@@ -26,7 +26,17 @@ makeCacheMatrix <- function(x = matrix()) {
 ## Write a short comment describing this function
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+     ## Return a matrix that is the inverse of 'x'
+     inverse <- x$getInverse()     ##Reference the current cached value
+     if(!is.null(inverse)) {
+          print("Getting inverse from cache...")
+          return(inverse)
+     }
+     print("Generating inverse (no cache)")
+     inverse <- solve(x$get())     ##Calculate the inverse
+     x$setInverse(inverse)         ##Cache the inverse in x
+     inverse                       ##Return the inverse
+     
 }
 
 makeVector <- function(x = numeric()) {
