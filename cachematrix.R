@@ -11,7 +11,7 @@
 
 
 
-## This function creates a wrapper for a matrix,
+## makeCacheMatrix creates a wrapper for a matrix,
 ## exposing the matrix through get and set functions
 ## and creating a placeholder for the inverse
 ## of that matrix.
@@ -26,26 +26,36 @@
 ##   The four getters and setters are exposed through a 
 ##   returned list.
 makeCacheMatrix <- function(x = matrix()) {
-    inverse <- NULL           #initializes the cached inverse matrix
-    set <- function(y) {
-         x <<- y              #allows external calls to overwrite x in this environment         
-         inverse <<- NULL     #re-initialize the cached inverse matrix
-    }
-    get <- function() x
-    setInverse <- function(i) inverse <<- i #allows external calls to overwrite the cached matrix
-    getInverse <- function() inverse #returns the cached inverse matrix
-    
-    ## Generate a list containing the four function pointers that expose the
-    ## matrix and its inverse (if cached)
-    list(set = set, 
-         get = get, 
-         setInverse = setInverse,
-         getInverse = getInverse)
-  
+     #initializes the cached inverse matrix
+     inverse <- NULL    
+     
+     #Allows external calls to access and overwrite the matrix 
+     # in this environment and re-initialize the cached inverse matrix
+     set <- function(y) {
+          x <<- y              
+          inverse <<- NULL     
+     }
+     get <- function() x
+     
+     #Allows external calls to access and overwrite the cached inverse matrix
+     # and returns the cached inverse matrix
+     setInverse <- function(i) inverse <<- i 
+     getInverse <- function() inverse 
+     
+     ## Return a list containing the four function pointers that expose the
+     ## matrix and its inverse (if cached)
+     list(set = set, 
+          get = get, 
+          setInverse = setInverse,
+          getInverse = getInverse)
+     
 }
 
 
-## cacheSolve takes a wrapped matrix built in makeCacheMatrix,
+## cacheSolve returns the inverse of a matrix, but uses a cached
+## version of the inverse if possible.  
+##
+## It takes a wrapped matrix built in makeCacheMatrix,
 ## calculates the inverse matrix once, and stores the result
 ## in the list containing the original matrix.  Subsequent
 ## calls to cacheSolve do not recalculate the inverse, but instead
@@ -53,12 +63,14 @@ makeCacheMatrix <- function(x = matrix()) {
 ##
 ## PARAMETERS:
 ##   A list containing the matrix to invert
+##   The ... parameter for additional optional parameters
 ##
 ## RETURNS:
 ##   The inverse of the matrix (a cached version, if available)
 cacheSolve <- function(x, ...) {
-     ## Return a matrix that is the inverse of 'x'
-     inverse <- x$getInverse()     ##Reference the current cached value
+     
+     ##Reference the current cached value
+     inverse <- x$getInverse()     
      
      ## Use the cached value if it exists
      if(!is.null(inverse)) {
@@ -66,12 +78,13 @@ cacheSolve <- function(x, ...) {
           return(inverse)
      }
      
-     ## Calculate the inverse
+     ## Calculate and cache the inverse
      message("Generating inverse (no cache)")
-     inverse <- solve(x$get())     ##Calculate the inverse
+     inverse <- solve(x$get())     
+     x$setInverse(inverse)
      
-     x$setInverse(inverse)         ##Cache the inverse in x
-     inverse                       ##Return the inverse
+     ##Return the inverse
+     inverse                       
      
 }
 
